@@ -3,4 +3,4 @@
 # be uploaded to GitHub
 # -------------------------------------------------------------------------------------------
 apps/backend/data/*.csv
-apps/backend/.venv
+.venv
