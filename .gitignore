@@ -1,0 +1,5 @@
+# -------------------------------------------------------------------------------------------
+# @brief folder where static files will be stored. Those are big files so won't 
+# be uploaded to GitHub
+# -------------------------------------------------------------------------------------------
+apps/backend/data/*.csv
