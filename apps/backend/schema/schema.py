@@ -1,3 +1,43 @@
+import strawberry
+from strawberry.types import Info
+from typing import List
+from models.user import User, UserPydantic, UserInPydantic
+
+
+@strawberry.type
+class UserType:
+    id: int
+    name: str
+    email: str
+
+
+@strawberry.type
+class Query:
+    @strawberry.field
+    async def users(self) -> List[UserType]:
+        users = await User.all()
+
+        if users is None:
+            return []
+
+        return [UserType(**user.__dict__) for user in users]
+
+    @strawberry.field
+    async def user(self, id: int) -> UserType:
+        user = await User.get(id=id)
+        return UserType(**user.__dict__)
+
+
+@strawberry.type
+class Mutation:
+    @strawberry.mutation
+    async def create_user(self, name: str, email: str) -> UserType:
+        user_data = await UserInPydantic.from_tortoise_orm(await User.create(name=name, email=email))
+        return UserType(**user_data.__dict__)
+
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
+
 # import strawberry
 # from typing import Optional, List
 # from enum import Enum
