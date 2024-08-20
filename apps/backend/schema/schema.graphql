@@ -62,3 +62,11 @@ type SaberProResults implements StudentResults {
   MOD_ENGLISH: Float!
   MOD_CITIZENSHIP_COMPETENCES: Float!
 }
+
+type Query {
+  departments: [Department],
+  department(id: ID!): Department,
+  municipalitiesByDepartment(departmentId: ID!): [Municipality]
+  institutionsByMunicipality(MunicipalityId: ID!, type: ReportType!): [Institution]
+  studentsByInstitution(institutionId: ID!): [Student]
+}
