@@ -1,106 +1,90 @@
-import strawberry
-from strawberry.types import Info
-from typing import List
-from models.user import User, UserPydantic, UserInPydantic
+import graphene
+from graphene_django import DjangoObjectType
+from books.models import Book
+from django.core.exceptions import ObjectDoesNotExist
 
 
-@strawberry.type
-class UserType:
-    id: int
-    name: str
-    email: str
+class BookNotFoundError(Exception):
+    def __init__(self, book_id) -> None:
+        super().__init__(f"Book with the given {book_id} doesn't exists")
 
 
-@strawberry.type
-class Query:
-    @strawberry.field
-    async def users(self) -> List[UserType]:
-        users = await User.all()
-
-        if users is None:
-            return []
-
-        return [UserType(**user.__dict__) for user in users]
-
-    @strawberry.field
-    async def user(self, id: int) -> UserType:
-        user = await User.get(id=id)
-        return UserType(**user.__dict__)
+class BookType(DjangoObjectType):
+    class Meta:
+        model = Book
 
 
-@strawberry.type
-class Mutation:
-    @strawberry.mutation
-    async def create_user(self, name: str, email: str) -> UserType:
-        user_data = await UserInPydantic.from_tortoise_orm(await User.create(name=name, email=email))
-        return UserType(**user_data.__dict__)
+class Query(graphene.ObjectType):
+    books = graphene.List(BookType)
+    book = graphene.Field(BookType, id=graphene.ID())
+
+    def resolve_books(self, info):
+        return Book.objects.all()
+
+    def resolve_book(self, info, id):
+        try:
+            return Book.objects.get(pk=id)
+        except ObjectDoesNotExist:
+            raise BookNotFoundError(book_id=id)
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+class CreateBookMutation(graphene.Mutation):
+    class Arguments:
+        title = graphene.String()
+        description = graphene.String()
 
-# import strawberry
-# from typing import Optional, List
-# from enum import Enum
+    book = graphene.Field(BookType)
 
-# @strawberry.type
-# class Department:
-#     id: strawberry.ID
-#     name: str
-#     municipalities: Optional[List['Municipality']]
+    def mutate(self, info, title, description):
+        book = Book(title=title, description=description)
+        book.save()
+        return CreateBookMutation(book=book)
 
-# @strawberry.type
-# class Municipality:
-#     id: strawberry.ID
-#     name: str
-#     institutions: Optional[List['Institution']]
 
-# @strawberry.enum
-# class ReportType(Enum):
-#     SABER11 = 'SABER11'
-#     SABERPRO = 'SABERPRO'
+class DeleteBookMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
 
-# @strawberry.type
-# class InstitutionInfo:
-#     isBilingual: Optional[bool]
+    book = graphene.Field(BookType)
 
-# @strawberry.type
-# class Institution:
-#     id: strawberry.ID
-#     name: str
-#     period: str
-#     type: ReportType
-#     info: Optional[InstitutionInfo]
-#     students: Optional[List['Student']]
+    def mutate(self, info, id):
+        try:
+            book = Book.objects.get(pk=id)
+            book.delete()
+            return DeleteBookMutation(book=book)
+        except ObjectDoesNotExist:
+            raise BookNotFoundError(book_id=id)
 
-# @strawberry.enum
-# class StudentGenre(Enum):
-#     Female = "Female"
-#     Male = "Male"
-#     Other = "Other"
 
-# @strawberry.interface
-# class StudentResults:
-#     id: strawberry.ID
+class UpdateBookMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+        title = graphene.String()
+        description = graphene.String()
 
-# @strawberry.type
-# class Saber11Results(StudentResults):
-#     PUNT_ENGLISH: float
-#     PUNT_MATHEMATICS: float
-#     PUNT_SOCIAL_CITIZENSHIP: float
-#     PUNT_NATURAL_SCIENCES: float
-#     PUNT_CRITICAL_READING: float
-#     PUNT_GLOBAL: float
+    book = graphene.Field(BookType)
 
-# @strawberry.type
-# class SaberProResults(StudentResults):
-#     MOD_QUANTITATIVE_REASONING: float
-#     MOD_WRITTEN_COMMUNICATION: float
-#     MOD_CRITICAL_READING: float
-#     MOD_ENGLISH: float
-#     MOD_CITIZENSHIP_COMPETENCES: float
+    def mutate(self, info, id, title=None, description=None):
+        try:
+            book = Book.objects.get(pk=id)
 
-# @strawberry.type
-# class Student:
-#     id: strawberry.ID
-#     genre: StudentGenre
-#     results: StudentResults
+            if title is not None:
+                book.title = title
+
+            if description is not None:
+                book.description = description
+
+            book.save()
+
+            return UpdateBookMutation(book=book)
+        except ObjectDoesNotExist:
+            raise BookNotFoundError(book_id=id)
+
+
+class Mutation(graphene.ObjectType):
+    create_book = CreateBookMutation.Field()
+    delete_book = DeleteBookMutation.Field()
+    update_book = UpdateBookMutation.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
