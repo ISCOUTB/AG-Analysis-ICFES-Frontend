@@ -1,6 +1,6 @@
 import graphene
 from books.exceptions import BookNotFoundError
-from saber.exceptions import DepartmentNotFoundError, MunicipalityNotFoundError
+from saber.exceptions import DepartmentNotFoundError, MunicipalityNotFoundError, InstitutionNotFoundError
 import schema.types as types
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -41,3 +41,25 @@ class Query(graphene.ObjectType):
             return types.Municipality.objects.get(pk=id)
         except ObjectDoesNotExist:
             raise MunicipalityNotFoundError(municipality_id=str(id))
+
+    institutions = graphene.List(types.InstitutionType)
+    institution = graphene.Field(types.InstitutionType)
+
+    def resolve_institutions(self, info):
+        return types.Institution.objects.all()
+
+    def resolve_institution(self, info, id):
+        try:
+            return types.Institution.objects.get(pk=id)
+        except ObjectDoesNotExist:
+            raise InstitutionNotFoundError(institution_id=str(id))
+
+    students = graphene.List(types.InstitutionType,
+                             institution_id=graphene.ID())
+
+    def resolve_students(self, info, institution_id):
+        try:
+            institution = types.Institution.objects.get(pk=institution_id)
+            return institution.students.objects.all()
+        except ObjectDoesNotExist:
+            pass

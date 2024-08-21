@@ -59,6 +59,8 @@ class Institution(models.Model):
 
 class Municipality(models.Model):
     name = models.CharField(max_length=255)
+    institutions = models.ForeignKey(
+        Institution, on_delete=models.CASCADE, related_name='institutions')
 
 
 class Department(models.Model):
