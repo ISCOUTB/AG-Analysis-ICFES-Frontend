@@ -1,13 +1,13 @@
 type Department {
-  id: ID!
-  name: String!
-  municipalities: [Municipality]
+  id: ID! ✔️
+  name: String! ✔️
+  municipalities: [Municipality] ✔️
 }
 
 type Municipality {
-  id: ID!
-  name: String!
-  institutions: [Institution]
+  id: ID! ✔️
+  name: String! ✔️
+  institutions: [Institution] ✔️
 }
 
 enum ReportType {
@@ -16,12 +16,12 @@ enum ReportType {
 }
 
 type Institution {
-  id: ID!
-  name: String!
-  period: String!
-  type: ReportType!
+  id: ID! ✔️
+  name: String! ✔️
+  period: String! ✔️
+  type: ReportType! ✔️
   info: InstitutionInfo
-  students: [Student]
+  students: [Student] ✔️
 }
 
 type InstitutionInfo {
@@ -35,38 +35,30 @@ enum StudentGenre {
 }
 
 type Student {
-  id: ID!
-  genre: StudentGenre!
+  id: ID! ✔️
+  genre: StudentGenre! ✔️
   results: StudentResults
 }
 
 interface StudentResults {
-  id: ID!
+  id: ID! ✔️
 }
 
 type Saber11Results implements StudentResults {
-  id: ID!
-  PUNT_ENGLISH: Float!
-  PUNT_MATHEMATICS: Float!
-  PUNT_SOCIAL_CITIZENSHIP: Float!
-  PUNT_NATURAL_SCIENCES: Float!
-  PUNT_CRITICAL_READING: Float!
-  PUNT_GLOBAL: Float!
+  id: ID! ✔️
+  PUNT_ENGLISH: Float! ✔️
+  PUNT_MATHEMATICS: Float! ✔️
+  PUNT_SOCIAL_CITIZENSHIP: Float! ✔️
+  PUNT_NATURAL_SCIENCES: Float! ✔️
+  PUNT_CRITICAL_READING: Float! ✔️
+  PUNT_GLOBAL: Float! ✔️
 }
 
 type SaberProResults implements StudentResults {
-  id: ID!
-  MOD_QUANTITATIVE_REASONING: Float!
-  MOD_WRITTEN_COMMUNICATION: Float!
-  MOD_CRITICAL_READING: Float!
-  MOD_ENGLISH: Float!
-  MOD_CITIZENSHIP_COMPETENCES: Float!
-}
-
-type Query {
-  departments: [Department],
-  department(id: ID!): Department,
-  municipalitiesByDepartment(departmentId: ID!): [Municipality]
-  institutionsByMunicipality(MunicipalityId: ID!, type: ReportType!): [Institution]
-  studentsByInstitution(institutionId: ID!): [Student]
+  id: ID! ✔️
+  MOD_QUANTITATIVE_REASONING: Float! ✔️
+  MOD_WRITTEN_COMMUNICATION: Float! ✔️
+  MOD_CRITICAL_READING: Float! ✔️
+  MOD_ENGLISH: Float! ✔️
+  MOD_CITIZENSHIP_COMPETENCES: Float! ✔️
 }
