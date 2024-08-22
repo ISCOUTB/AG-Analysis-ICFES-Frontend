@@ -1,8 +1,10 @@
 from django.contrib import admin
-from saber.models import Department, Municipality, Institution, Student, Saber11Results, SaberProResults
+from django.apps import apps
 
-models_to_register = [Department, Municipality, Institution, Student, Saber11Results, SaberProResults]
+app = apps.get_app_config('saber')
 
-for model in models_to_register:
-    admin.site.register(model)
-
+for model in app.get_models():
+    try:
+        admin.site.register(model)
+    except admin.sites.AlreadyRegistered:
+        pass

@@ -1,15 +1,33 @@
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
+
+MALE = "MALE"
+FEMALE = "FEMALE"
+OTHER = "OTHER"
+
+GENRE = [
+    (MALE, MALE),
+    (FEMALE, FEMALE),
+    (OTHER, OTHER)
+]
 
 
-class StudentResults(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    result_type = GenericForeignKey('content_type', 'object_id')
+class BaseInstitution(models.Model):
+    name = models.TextField()
+
+    class Meta:
+        abstract = True
 
 
-class Saber11Results(StudentResults):
+class BaseStudent(models.Model):
+    genre = models.CharField(max_length=20, choices=GENRE)
+
+    class Meta:
+        abstract = True
+
+
+class HighschoolStudent(BaseStudent):
+    highschool = models.ForeignKey(
+        'Highschool', on_delete=models.CASCADE, related_name='students')
     PUNT_ENGLISH = models.FloatField()
     PUNT_MATHEMATICS = models.FloatField()
     PUNT_SOCIAL_CITIZENSHIP = models.FloatField()
@@ -18,7 +36,14 @@ class Saber11Results(StudentResults):
     PUNT_GLOBAL = models.FloatField()
 
 
-class SaberProResults(StudentResults):
+class Highschool(BaseInstitution):
+    municipality = models.ForeignKey(
+        'Municipality', on_delete=models.CASCADE, related_name='highschools')
+
+
+class CollegeStudent(BaseStudent):
+    college = models.ForeignKey(
+        'College', on_delete=models.CASCADE, related_name='students')
     MOD_QUANTITATIVE_REASONING = models.FloatField()
     MOD_WRITTEN_COMMUNICATION = models.FloatField()
     MOD_CRITICAL_READING = models.FloatField()
@@ -26,44 +51,16 @@ class SaberProResults(StudentResults):
     MOD_CITIZENSHIP_COMPETENCES = models.FloatField()
 
 
-class Student(models.Model):
-    MALE = "MALE"
-    FEMALE = "FEMALE"
-    OTHER = "OTHER"
-
-    GENRE = [
-        (MALE, MALE),
-        (FEMALE, FEMALE),
-        (OTHER, OTHER)
-    ]
-
-    genre = models.CharField(max_length=20, choices=GENRE)
-    results = models.OneToOneField(StudentResults, on_delete=models.CASCADE)
-
-
-class Institution(models.Model):
-    SABER11 = "SABER11"
-    SABERPRO = "SABERPRO"
-
-    REPORT_TYPE = [
-        (SABER11, SABER11),
-        (SABERPRO, SABERPRO)
-    ]
-
-    name = models.TextField()
-    period = models.CharField(max_length=255)
-    report_type = models.CharField(max_length=20, choices=REPORT_TYPE)
-    students = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='students')
+class College(BaseInstitution):
+    municipality = models.ForeignKey(
+        'Municipality', on_delete=models.CASCADE, related_name='colleges')
 
 
 class Municipality(models.Model):
     name = models.CharField(max_length=255)
-    institutions = models.ForeignKey(
-        Institution, on_delete=models.CASCADE, related_name='institutions')
+    department = models.ForeignKey(
+        'Department', on_delete=models.CASCADE, related_name='municipalities')
 
 
 class Department(models.Model):
     name = models.CharField(max_length=255)
-    municipalities = models.ForeignKey(
-        Municipality, on_delete=models.CASCADE, related_name='departments')
