@@ -53,3 +53,19 @@ class Query(graphene.ObjectType):
             return saber_models.Highschool.objects.get(pk=id)
         except ObjectDoesNotExist:
             raise HighschoolNotFoundError(id=str(id))
+
+    # -----------------------------------------------------------------------------|>
+    # College
+    # -----------------------------------------------------------------------------|>
+
+    colleges = graphene.List(types.HighschoolType)
+    college = graphene.Field(types.HighschoolType, id=graphene.ID())
+
+    def resolve_colleges(self, info):
+        return saber_models.College.objects.all()
+
+    def resolve_college(self, info, id):
+        try:
+            return saber_models.College.objects.get(pk=id)
+        except ObjectDoesNotExist:
+            raise CollegeNotFoundError(id=str(id))
