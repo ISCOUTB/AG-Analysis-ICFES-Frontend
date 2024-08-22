@@ -27,7 +27,7 @@ class BaseStudent(models.Model):
 
 class HighschoolStudent(BaseStudent):
     highschool = models.ForeignKey(
-        'Highschool', on_delete=models.CASCADE, related_name='students')
+        'Highschool', on_delete=models.CASCADE, related_name='highschool_students')
     PUNT_ENGLISH = models.FloatField()
     PUNT_MATHEMATICS = models.FloatField()
     PUNT_SOCIAL_CITIZENSHIP = models.FloatField()
@@ -43,7 +43,7 @@ class Highschool(BaseInstitution):
 
 class CollegeStudent(BaseStudent):
     college = models.ForeignKey(
-        'College', on_delete=models.CASCADE, related_name='students')
+        'College', on_delete=models.CASCADE, related_name='college_students')
     MOD_QUANTITATIVE_REASONING = models.FloatField()
     MOD_WRITTEN_COMMUNICATION = models.FloatField()
     MOD_CRITICAL_READING = models.FloatField()

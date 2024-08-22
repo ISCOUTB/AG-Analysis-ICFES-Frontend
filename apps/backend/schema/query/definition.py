@@ -58,8 +58,8 @@ class Query(graphene.ObjectType):
     # College
     # -----------------------------------------------------------------------------|>
 
-    colleges = graphene.List(types.HighschoolType)
-    college = graphene.Field(types.HighschoolType, id=graphene.ID())
+    colleges = graphene.List(types.CollegeType)
+    college = graphene.Field(types.CollegeType, id=graphene.ID())
 
     def resolve_colleges(self, info):
         return saber_models.College.objects.all()
@@ -69,3 +69,21 @@ class Query(graphene.ObjectType):
             return saber_models.College.objects.get(pk=id)
         except ObjectDoesNotExist:
             raise CollegeNotFoundError(id=str(id))
+
+    # -----------------------------------------------------------------------------|>
+    # Highschool Student
+    # -----------------------------------------------------------------------------|>
+
+    highschool_students = graphene.List(types.HighschoolStudentType)
+
+    def resolve_highschool_students(self, info):
+        return saber_models.HighschoolStudent.objects.all()
+
+    # -----------------------------------------------------------------------------|>
+    # College Student
+    # -----------------------------------------------------------------------------|>
+
+    college_student = graphene.List(types.CollegeStudentType)
+
+    def resolve_college_student(self, info):
+        return saber_models.CollegeStudent.objects.all()
