@@ -1,11 +1,10 @@
 import graphene
-# from schema.mutation.books.create_book_mutation import CreateBookMutation
-# from schema.mutation.books.delete_book_mutation import DeleteBookMutation
-# from schema.mutation.books.update_book_mutation import UpdateBookMutation
+from schema.mutation.saber.create_department import CreateDepartmentMutation
+from schema.mutation.saber.delete_department import DeleteDepartmentMutation
+from schema.mutation.saber.update_department import UpdateDepartmentMutation
 
 
 class Mutation(graphene.ObjectType):
-    # create_book = CreateBookMutation.Field()
-    # delete_book = DeleteBookMutation.Field()
-    # update_book = UpdateBookMutation.Field()
-    pass
+    create_department = CreateDepartmentMutation.Field()
+    delete_department = DeleteDepartmentMutation.Field()
+    update_department = UpdateDepartmentMutation.Field()
