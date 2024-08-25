@@ -9,6 +9,8 @@
 
     const { data, signIn } = useAuth();
     const colorMode = useColorMode();
+
+    const { characters } = await GqlCharacters();
 </script>
 
 <template>
@@ -31,4 +33,7 @@
             <SelectItem value="sepia">Sepia</SelectItem>
         </SelectContent>
     </Select>
+    <pre>
+        {{ characters }}
+    </pre>
 </template>
