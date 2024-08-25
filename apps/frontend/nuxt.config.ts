@@ -1,22 +1,17 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-04-03",
-  devtools: { enabled: true },
-  modules: [
-    // "nuxt-graphql-client",
-    "@prisma/nuxt",
-    "@sidebase/nuxt-auth",
-  ],
-  prisma: {
-    autoSetupPrisma: true,
-  },
-  runtimeConfig: {
-    AUTH_ORIGIN: process.env.AUTH_ORIGIN,
-    AUTH_SECRET: process.env.AUTH_SECRET,
-  },
-  auth: {
-    provider: {
-      type: "authjs",
+    compatibilityDate: "2024-04-03",
+    devtools: { enabled: true },
+    modules: ["@prisma/nuxt", "@sidebase/nuxt-auth"],
+    prisma: {
+        autoSetupPrisma: true,
     },
-    baseURL: process.env.AUTH_ORIGIN,
-  },
+    runtimeConfig: {
+        authSecret: process.env.AUTH_SECRET,
+        githubClientId: process.env.GITHUB_CLIENT_ID,
+        githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+    },
+    auth: {
+        baseURL: process.env.AUTH_ORIGIN,
+    },
 });
