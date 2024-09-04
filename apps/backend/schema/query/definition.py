@@ -83,7 +83,7 @@ class Query(graphene.ObjectType):
     # College Student
     # -----------------------------------------------------------------------------|>
 
-    college_student = graphene.List(types.CollegeStudentType)
+    college_students = graphene.List(types.CollegeStudentType)
 
     def resolve_college_student(self, info):
         return saber_models.CollegeStudent.objects.all()
