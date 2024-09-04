@@ -1,39 +1,61 @@
 <script setup lang="ts">
-    import {
-        Select,
-        SelectTrigger,
-        SelectValue,
-        SelectContent,
-        SelectItem,
-    } from "@/components/ui/select";
+    const { session, loggedIn, fetch } = useUserSession();
 
-    const { data, signIn } = useAuth();
-    const colorMode = useColorMode();
+    function handleSubmit(event: Event) {
+        if (!(event.target instanceof HTMLFormElement)) return;
 
-    const { characters } = await GqlCharacters();
+        const { elements } = event.target;
+        const emailElement = elements.namedItem("email");
+        const passwordElement = elements.namedItem("password");
+
+        if (!(emailElement instanceof HTMLInputElement)) return;
+
+        if (!(passwordElement instanceof HTMLInputElement)) return;
+
+        const email = emailElement.value;
+        const password = passwordElement.value;
+
+        $fetch("/api/auth/login", {
+            method: "POST",
+            body: { email, password },
+        })
+            .then(() => {
+                fetch();
+            })
+            .catch((error) => console.error(error));
+    }
+
+    const providers = [
+        {
+            label: "Github",
+            to: "/api/auth/provider/github",
+        },
+    ];
 </script>
 
 <template>
-    hello there
-    <button @click="signIn('github')">Github</button>
-    <pre>
-        {{ data }}
-    </pre>
-    <Select
-        :modelValue="$colorMode.preference"
-        :onUpdate:modelValue="(value) => (colorMode.preference = value)"
-    >
-        <SelectTrigger>
-            <SelectValue placeholder="Color mode" />
-        </SelectTrigger>
-        <SelectContent>
-            <SelectItem value="system">System</SelectItem>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="sepia">Sepia</SelectItem>
-        </SelectContent>
-    </Select>
-    <pre>
-        {{ characters }}
-    </pre>
+    <AuthState #default="{ clear }">
+        <form @submit.prevent="handleSubmit">
+            <input type="text" name="email" class="border" />
+            <input type="text" name="password" class="border" />
+            <button>submit</button>
+        </form>
+
+        <button @click="clear">Sign out</button>
+
+        <div>
+            <NuxtLink
+                v-for="provider in providers"
+                :key="provider.label"
+                :prefetch="false"
+                :external="true"
+                :to="provider.to"
+            >
+                Login with {{ provider.label }}
+            </NuxtLink>
+        </div>
+
+        <pre>{{ session }}</pre>
+        <pre>{{ loggedIn }}</pre>
+    </AuthState>
 </template>

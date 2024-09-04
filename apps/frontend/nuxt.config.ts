@@ -3,22 +3,14 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     modules: [
       "@prisma/nuxt",
-      "@sidebase/nuxt-auth",
       "@nuxtjs/tailwindcss",
       "shadcn-nuxt",
       "@nuxtjs/color-mode",
       "nuxt-graphql-client",
+      "nuxt-auth-utils",
     ],
     prisma: {
         autoSetupPrisma: true,
-    },
-    runtimeConfig: {
-        authSecret: process.env.AUTH_SECRET,
-        githubClientId: process.env.GITHUB_CLIENT_ID,
-        githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-    },
-    auth: {
-        baseURL: process.env.AUTH_ORIGIN,
     },
     shadcn: {
         prefix: "",
