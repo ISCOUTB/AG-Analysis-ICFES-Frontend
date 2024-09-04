@@ -3,6 +3,7 @@ import { H3Event } from "h3";
 
 async function handleOnSuccess(
     event: H3Event,
+    // eslint-disable-next-line @typescript-eslint/no-implicit-any
     { user }: { user: any },
     provider: string,
 ) {
