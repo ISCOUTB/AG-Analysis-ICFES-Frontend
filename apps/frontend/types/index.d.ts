@@ -30,6 +30,12 @@ declare global {
         label: string;
         to: string;
     }
+
+    interface ColorModeOption {
+        label: string;
+        icon: string;
+        action: () => void;
+    }
 }
 
 export {};
