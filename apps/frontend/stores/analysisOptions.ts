@@ -10,7 +10,7 @@ interface State {
     reportType: ReportType;
 }
 
-export const useAnalysisOptions = defineStore("analysis-options", {
+export const useAnalysisOptions = defineStore("analysis-options-store", {
     state: (): State => ({
         department: null,
         institution: null,

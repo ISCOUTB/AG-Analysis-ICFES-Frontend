@@ -9,7 +9,8 @@ export default defineNuxtConfig({
       "nuxt-graphql-client",
       "nuxt-auth-utils",
       "@pinia/nuxt",
-      "@nuxt/eslint"
+      "@nuxt/eslint",
+      "@nuxt/icon",
     ],
     prisma: {
         autoSetupPrisma: true,
@@ -29,5 +30,5 @@ export default defineNuxtConfig({
     },
     alias: {
         pinia: 'pinia/dist/pinia.mjs'
-    }
+    },
 });
