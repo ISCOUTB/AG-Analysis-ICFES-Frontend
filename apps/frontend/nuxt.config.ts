@@ -2,12 +2,14 @@ export default defineNuxtConfig({
     compatibilityDate: "2024-04-03",
     devtools: { enabled: true },
     modules: [
-        "@prisma/nuxt",
-        "@nuxtjs/tailwindcss",
-        "shadcn-nuxt",
-        "@nuxtjs/color-mode",
-        "nuxt-graphql-client",
-        "nuxt-auth-utils",
+      "@prisma/nuxt",
+      "@nuxtjs/tailwindcss",
+      "shadcn-nuxt",
+      "@nuxtjs/color-mode",
+      "nuxt-graphql-client",
+      "nuxt-auth-utils",
+      "@pinia/nuxt",
+      "@nuxt/eslint"
     ],
     prisma: {
         autoSetupPrisma: true,
@@ -22,4 +24,10 @@ export default defineNuxtConfig({
     experimental: {
         typedPages: true,
     },
+    pinia: {
+        storesDirs: ['./stores/**']
+    },
+    alias: {
+        pinia: 'pinia/dist/pinia.mjs'
+    }
 });

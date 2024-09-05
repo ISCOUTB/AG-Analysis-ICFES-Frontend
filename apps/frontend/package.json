@@ -1,41 +1,46 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "dependencies": {
-    "@prisma/nuxt": "^0.0.35",
-    "@types/bcrypt": "^5.0.2",
-    "bcrypt": "^5.1.1",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "lucide-vue-next": "^0.435.0",
-    "nuxt": "^3.13.0",
-    "nuxt-auth-utils": "^0.3.5",
-    "nuxt-graphql-client": "^0.2.36",
-    "prisma": "^5.18.0",
-    "radix-vue": "^1.9.4",
-    "shadcn-nuxt": "^0.10.4",
-    "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7",
-    "vue": "latest"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.9.1",
-    "@nuxtjs/color-mode": "^3.4.4",
-    "@nuxtjs/tailwindcss": "^6.12.1",
-    "@prisma/client": "^5.19.1",
-    "eslint": "^9.9.1",
-    "eslint-plugin-vue": "^9.28.0",
-    "globals": "^15.9.0",
-    "prettier": "^3.3.3",
-    "typescript": "^5.5.4",
-    "typescript-eslint": "^8.4.0"
-  }
+    "name": "nuxt-app",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "dependencies": {
+        "@nuxt/eslint": "^0.5.5",
+        "@pinia/nuxt": "^0.5.4",
+        "@prisma/nuxt": "^0.0.35",
+        "@types/bcrypt": "^5.0.2",
+        "bcrypt": "^5.1.1",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "lucide-vue-next": "^0.435.0",
+        "nuxt": "^3.13.0",
+        "nuxt-auth-utils": "^0.3.5",
+        "nuxt-graphql-client": "^0.2.36",
+        "prisma": "^5.18.0",
+        "radix-vue": "^1.9.4",
+        "shadcn-nuxt": "^0.10.4",
+        "tailwind-merge": "^2.5.2",
+        "tailwindcss-animate": "^1.0.7",
+        "vue": "latest"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.9.1",
+        "@nuxtjs/color-mode": "^3.4.4",
+        "@nuxtjs/tailwindcss": "^6.12.1",
+        "@prisma/client": "^5.19.1",
+        "eslint": "^9.9.1",
+        "eslint-plugin-vue": "^9.28.0",
+        "globals": "^15.9.0",
+        "prettier": "^3.3.3",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.4.0"
+    },
+    "overrides": {
+        "vue": "latest"
+    }
 }

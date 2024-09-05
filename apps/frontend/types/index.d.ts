@@ -20,6 +20,11 @@ declare global {
     interface UserInfo {
         userId: string;
     }
+
+    interface Provider {
+        label: string,
+        redirectTo: string,
+    }
 }
 
 export {};
