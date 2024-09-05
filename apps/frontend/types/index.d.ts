@@ -22,8 +22,13 @@ declare global {
     }
 
     interface Provider {
-        label: string,
-        redirectTo: string,
+        label: string;
+        redirectTo: string;
+    }
+
+    interface NavbarLinkItem {
+        label: string;
+        to: string;
     }
 }
 
