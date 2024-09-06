@@ -1,10 +1,4 @@
 <script setup lang="ts">
-    import {
-        DropdownMenu,
-        DropdownMenuTrigger,
-        DropdownMenuContent,
-        DropdownMenuItem,
-    } from "@/components/ui/dropdown-menu";
     import { capitalize } from "vue";
 
     const colorMode = useColorMode();

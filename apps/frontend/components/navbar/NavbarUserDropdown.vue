@@ -1,19 +1,4 @@
-<script setup lang="ts">
-    import {
-        Avatar,
-        AvatarFallback,
-        AvatarImage,
-    } from "@/components/ui/avatar";
-    import {
-        DropdownMenu,
-        DropdownMenuContent,
-        DropdownMenuTrigger,
-        DropdownMenuItem,
-        DropdownMenuSub,
-        DropdownMenuSubTrigger,
-        DropdownMenuSubContent,
-        DropdownMenuPortal,
-    } from "@/components/ui/dropdown-menu";
+<script setup lang="ts"> 
     import { providers } from "@/lib/providers";
     import { capitalize } from "vue";
 
