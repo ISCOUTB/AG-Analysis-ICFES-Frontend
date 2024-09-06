@@ -1,3 +1,4 @@
 <template>
-    <HomeAnalysisOptions />    
+    <HomeAnalysisOptions />
+    <HomeAditionalOptions />
 </template>
