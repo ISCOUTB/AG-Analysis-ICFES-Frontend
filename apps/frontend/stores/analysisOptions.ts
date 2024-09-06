@@ -1,20 +1,20 @@
-enum ReportType {
+export enum ReportType {
     SABER11 = "SABER11",
     SABERPRO = "SABERPRO",
 }
 
 interface State {
-    department: string | null;
-    municipality: string | null;
-    institution: string | null;
+    department: string;
+    municipality: string;
+    institution: string;
     reportType: ReportType;
 }
 
 export const useAnalysisOptions = defineStore("analysis-options-store", {
     state: (): State => ({
-        department: null,
-        institution: null,
-        municipality: null,
+        department: "",
+        institution: "",
+        municipality: "",
         reportType: ReportType.SABER11,
     }),
     actions: {
@@ -37,9 +37,9 @@ export const useAnalysisOptions = defineStore("analysis-options-store", {
         },
 
         clear() {
-            this.department = null;
-            this.municipality = null;
-            this.institution = null;
+            this.department = "";
+            this.municipality = "";
+            this.institution = "";
             this.reportType = ReportType.SABER11;
         },
     },
