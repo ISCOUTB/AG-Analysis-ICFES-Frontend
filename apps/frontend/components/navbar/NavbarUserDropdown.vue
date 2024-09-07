@@ -14,14 +14,24 @@
     const dropdownMenuItems: DropdownMenuItem[] = [
         {
             label: "Sign up",
-            subItems: providers.map(({ label, redirectTo }) => {
-                return {
-                    label,
-                    action: () =>
-                        navigateTo({ path: redirectTo }, { external: true }),
-                    icon: `mdi:${label}`,
-                };
-            }),
+            subItems: [
+                {
+                    label: "Login",
+                    icon: "mdi:login",
+                    action: () => navigateTo({ path: "/auth/login" }),
+                },
+                ...providers.map(({ label, redirectTo }) => {
+                    return {
+                        label,
+                        action: () =>
+                            navigateTo(
+                                { path: redirectTo },
+                                { external: true },
+                            ),
+                        icon: `mdi:${label}`,
+                    };
+                }),
+            ],
         },
         {
             label: "Sign out",
@@ -56,7 +66,9 @@
                             <span v-if="user.name" class="font-semibold">{{
                                 user.name
                             }}</span>
-                            <span v-if="user.email" class="text-sm">{{ user.email }}</span>
+                            <span v-if="user.email" class="text-sm">{{
+                                user.email
+                            }}</span>
                         </div>
                     </DropdownMenuItem>
 

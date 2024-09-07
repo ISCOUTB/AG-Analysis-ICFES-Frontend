@@ -14,7 +14,9 @@
         "@nuxt/icon": "^1.5.1",
         "@pinia/nuxt": "^0.5.4",
         "@prisma/nuxt": "^0.0.35",
-        "@types/bcrypt": "^5.0.2",
+        "@vee-validate/nuxt": "^4.13.2",
+        "@vee-validate/zod": "^4.13.2",
+        "@vueuse/core": "^11.0.3",
         "bcrypt": "^5.1.1",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
@@ -27,7 +29,9 @@
         "shadcn-nuxt": "^0.10.4",
         "tailwind-merge": "^2.5.2",
         "tailwindcss-animate": "^1.0.7",
-        "vue": "latest"
+        "vee-validate": "^4.13.2",
+        "vue": "latest",
+        "zod": "^3.23.8"
     },
     "devDependencies": {
         "@eslint/js": "^9.9.1",
@@ -35,6 +39,7 @@
         "@nuxtjs/color-mode": "^3.4.4",
         "@nuxtjs/tailwindcss": "^6.12.1",
         "@prisma/client": "^5.19.1",
+        "@types/bcrypt": "^5.0.2",
         "eslint": "^9.9.1",
         "eslint-plugin-vue": "^9.28.0",
         "globals": "^15.9.0",
