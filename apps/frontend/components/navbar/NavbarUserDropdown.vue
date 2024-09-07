@@ -1,4 +1,4 @@
-<script setup lang="ts"> 
+<script setup lang="ts">
     import { providers } from "@/lib/providers";
     import { capitalize } from "vue";
 
@@ -49,7 +49,17 @@
                         </AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent class="w-64">
+                    <DropdownMenuItem v-if="user">
+                        <div class="flex flex-col">
+                            <span class="text-xs">Signed as</span>
+                            <span v-if="user.name" class="font-semibold">{{
+                                user.name
+                            }}</span>
+                            <span v-if="user.email" class="text-sm">{{ user.email }}</span>
+                        </div>
+                    </DropdownMenuItem>
+
                     <template v-for="item in dropdownMenuItems">
                         <DropdownMenuItem
                             v-if="!item.subItems"
