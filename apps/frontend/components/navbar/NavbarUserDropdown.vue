@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { providers } from "@/lib/providers";
     import { capitalize } from "vue";
+    import { useToast } from "@/components/ui/toast";
 
     interface DropdownMenuItem {
         label: string;
@@ -10,6 +11,7 @@
     }
 
     const { clear } = useUserSession();
+    const { toast } = useToast();
 
     const dropdownMenuItems: DropdownMenuItem[] = [
         {
@@ -18,7 +20,8 @@
                 {
                     label: "Login",
                     icon: "mdi:login",
-                    action: () => navigateTo({ path: "/auth/login" }),
+                    action: async () =>
+                        await navigateTo({ path: "/auth/login" }),
                 },
                 ...providers.map(({ label, redirectTo }) => {
                     return {
@@ -35,14 +38,19 @@
         },
         {
             label: "Sign out",
-            action: () => clear(),
+            action: () => {
+                clear();
+                toast({
+                    title: "Logged out",
+                });
+            },
         },
     ];
 
     const createAvatarFallback = (username?: string) => {
         return username
             ?.split(" ")
-            .map((word) => word[0])
+            .map((word) => word[0].toUpperCase())
             .join("");
     };
 </script>
@@ -75,11 +83,12 @@
                     <template v-for="item in dropdownMenuItems">
                         <DropdownMenuItem
                             v-if="!item.subItems"
+                            :key="item.label"
                             @click="item.action"
                         >
                             {{ capitalize(item.label) }}
                         </DropdownMenuItem>
-                        <DropdownMenuSub v-else>
+                        <DropdownMenuSub v-else :key="item.subItems[0].label">
                             <DropdownMenuSubTrigger>
                                 {{ capitalize(item.label) }}
                             </DropdownMenuSubTrigger>
@@ -87,6 +96,7 @@
                                 <DropdownMenuSubContent>
                                     <DropdownMenuItem
                                         v-for="subItem in item.subItems"
+                                        :key="subItem.label"
                                         @click="subItem.action"
                                     >
                                         <div class="flex items-center gap-2">

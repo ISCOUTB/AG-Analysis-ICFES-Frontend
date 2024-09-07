@@ -1,3 +1,5 @@
+import type { InputHTMLAttributes } from "vue";
+
 declare module "#auth-utils" {
     interface User {
         id?: string;
@@ -35,6 +37,15 @@ declare global {
         label: string;
         icon: string;
         action: () => void;
+    }
+
+    interface FormField<T extends Object> {
+        name: keyof T;
+        label: string;
+        type: InputHTMLAttributes["type"];
+
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete for more info about this field
+        autocomplete: InputHTMLAttributes["autocomplete"];
     }
 }
 

@@ -5,20 +5,21 @@ import { hash, genSalt } from "bcrypt";
 const hashPassword = async (password: string) => {
     const salt = await genSalt(15);
     return await hash(password, salt);
-}
+};
 
 export default defineEventHandler(async (event) => {
     try {
         const { email, password, name } = await readBody(event);
-        
-        const userWithEmail = await prisma.user.findUnique({ where: { email }})
 
-        if (userWithEmail) 
+        const userWithEmail = await prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (userWithEmail)
             throw createError({
                 statusCode: 400,
-                statusMessage: "|Error| Email already in use"
-            })
-        
+                statusMessage: "Email already in use",
+            });
 
         const hashedPassword = await hashPassword(password);
 
@@ -26,18 +27,17 @@ export default defineEventHandler(async (event) => {
             data: {
                 email,
                 hashedPassword,
-                name
-            }
-        })
+                name,
+            },
+        });
 
         return { user };
     } catch (error) {
-        if (error instanceof H3Error)
-            throw createError({ ...error });
+        if (error instanceof H3Error) throw createError({ ...error });
 
         throw createError({
             statusCode: 500,
-            statusMessage: "|Error| An unknown error ocurred"
-        })
+            message: "An unknown error ocurred",
+        });
     }
 });

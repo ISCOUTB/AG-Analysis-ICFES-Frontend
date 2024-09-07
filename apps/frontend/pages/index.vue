@@ -1,10 +1,12 @@
 <script setup lang="ts">
     useHead({
-        title: "Home",
+        title: "Home Page",
     });
 </script>
 
 <template>
-    <HomeAnalysisOptions />
-    <HomeAditionalOptions />
+    <section :key="$route.fullPath">
+        <HomeAnalysisOptions />
+        <HomeAditionalOptions />
+    </section>
 </template>

@@ -1,32 +1,33 @@
 <script setup lang="ts">
     import { toTypedSchema } from "@vee-validate/zod";
     import { cn, handleGoBack, handleGoRoot } from "@/lib/utils";
-    import { LoginSchema, formFields } from "@/schemas/auth/login.schema";
+    import { RegisterSchema, formFields } from "@/schemas/auth/register.schema";
     import { useToast } from "@/components/ui/toast";
 
     useHead({
         title: "Login",
     });
 
-    const validationSchema = toTypedSchema(LoginSchema);
+    const validationSchema = toTypedSchema(RegisterSchema);
 
     const { handleSubmit, errors } = useForm({
         validationSchema,
         initialValues: {
+            username: "",
             email: "",
             password: "",
+            confirmPassword: "",
         },
     });
 
     const { toast } = useToast();
-    const { fetch } = useUserSession();
 
     const onSubmit = handleSubmit((values) => {
-        const { email, password } = values;
+        const { email, username, password } = values;
 
-        $fetch("/api/auth/login", {
+        $fetch("/api/auth/register", {
             method: "POST",
-            body: { email, password },
+            body: { email, username, password },
             onResponseError(error) {
                 toast({
                     title: "Oops! An error ocurred",
@@ -36,12 +37,9 @@
             },
         }).then(async () => {
             toast({
-                title: "Logged In!",
+                title: "User created succesfully",
             });
-
-            await fetch();
-
-            handleGoRoot();
+            await navigateTo({ path: "/auth/login" });
         });
     });
 </script>
@@ -52,7 +50,7 @@
             <CardHeader>
                 <CardTitle
                     class="text-2xl font-bold text-center dark:text-gray-100"
-                    >Login</CardTitle
+                    >Register</CardTitle
                 >
             </CardHeader>
             <CardContent>
@@ -93,11 +91,11 @@
 
                     <div>
                         <span class="text-sm"
-                            >Don't have an account?
+                            >Already have an account?
                             <NuxtLink
-                                to="/auth/register"
+                                to="/auth/login"
                                 class="text-orange-500 font-bold"
-                                >Register</NuxtLink
+                                >Login</NuxtLink
                             ></span
                         >
                     </div>
