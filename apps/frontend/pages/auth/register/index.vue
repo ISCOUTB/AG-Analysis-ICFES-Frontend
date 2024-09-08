@@ -94,7 +94,7 @@
                             >Already have an account?
                             <NuxtLink
                                 to="/auth/login"
-                                class="text-orange-500 font-bold"
+                                class="text-orange-500 dark:text-slate-200 font-bold"
                                 >Login</NuxtLink
                             ></span
                         >
@@ -110,6 +110,7 @@
                         <Button
                             type="button"
                             variant="destructive"
+                            class="dark:bg-orange-500"
                             @click="handleGoRoot"
                         >
                             Cancel

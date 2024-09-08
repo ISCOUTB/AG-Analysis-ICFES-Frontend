@@ -39,7 +39,7 @@ declare global {
         action: () => void;
     }
 
-    interface FormField<T extends Object> {
+    interface FormField<T extends object> {
         name: keyof T;
         label: string;
         type: InputHTMLAttributes["type"];

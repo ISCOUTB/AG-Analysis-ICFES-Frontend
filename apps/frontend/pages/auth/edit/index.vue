@@ -1,32 +1,61 @@
 <script setup lang="ts">
-    import { toTypedSchema } from "@vee-validate/zod";
+    import type { z } from "zod";
+    import { UpdateSchema } from "@/schemas/auth/update.schema";
     import { cn, handleGoBack, handleGoRoot } from "@/lib/utils";
-    import { LoginSchema, formFields } from "@/schemas/auth/login.schema";
     import { useToast } from "@/components/ui/toast";
 
     useHead({
-        title: "Login",
+        title: "Edit Account",
     });
 
-    const validationSchema = toTypedSchema(LoginSchema);
+    definePageMeta({
+        middleware: ["auth"],
+    });
 
+    const validationSchema = toTypedSchema(UpdateSchema);
+
+    const { session, fetch } = useUserSession();
     const { handleSubmit, errors } = useForm({
         validationSchema,
         initialValues: {
-            email: "",
-            password: "",
+            email: session.value.user?.email,
+            username: session.value.user?.name,
         },
     });
-
     const { toast } = useToast();
-    const { fetch } = useUserSession();
+
+    const formFields: FormField<z.infer<typeof UpdateSchema>>[] = [
+        {
+            name: "email",
+            label: "Email",
+            type: "email",
+            autocomplete: "email",
+        },
+        {
+            name: "username",
+            label: "Username",
+            type: "text",
+            autocomplete: "username",
+        },
+    ];
 
     const onSubmit = handleSubmit((values) => {
-        const { email, password } = values;
+        if (!session.value.user) return;
 
-        $fetch("/api/auth/login", {
+        const { username: newUsername, email: newEmail } = values;
+        const { name, email } = session.value.user;
+
+        if (name === newUsername && email === newEmail) return;
+
+        $fetch("/api/auth/user/edit", {
             method: "POST",
-            body: { email, password },
+            body: {
+                name: newUsername,
+                email: newEmail,
+            },
+            query: {
+                userId: session.value.user.id,
+            },
             onResponseError(error) {
                 toast({
                     title: "Oops! An error ocurred",
@@ -36,7 +65,7 @@
             },
         }).then(async () => {
             toast({
-                title: "Logged In!",
+                title: "User updated!",
             });
 
             await fetch();
@@ -52,8 +81,9 @@
             <CardHeader>
                 <CardTitle
                     class="text-2xl font-bold text-center dark:text-gray-100"
-                    >Login</CardTitle
                 >
+                    Update
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <form class="space-y-6" @submit="onSubmit">
@@ -90,17 +120,6 @@
                             <FormMessage class="dark:text-orange-400" />
                         </FormItem>
                     </FormField>
-
-                    <div>
-                        <span class="text-sm"
-                            >Don't have an account?
-                            <NuxtLink
-                                to="/auth/register"
-                                class="text-orange-500 dark:text-slate-200  font-bold"
-                                >Register</NuxtLink
-                            ></span
-                        >
-                    </div>
 
                     <div class="space-x-2">
                         <Button

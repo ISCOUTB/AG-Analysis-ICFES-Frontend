@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
         if (!email || !password)
             throw createError({
                 statusCode: 400,
-                statusMessage: "|Error| Invalid Request",
+                statusMessage: "Invalid Request",
             });
 
         const user = await prisma.user.findUnique({ where: { email } });
@@ -17,13 +17,13 @@ export default eventHandler(async (event) => {
         if (!user)
             throw createError({
                 statusCode: 400,
-                statusMessage: "|Error| User not exists",
+                statusMessage: "User not exists",
             });
 
         if (!user.hashedPassword)
             throw createError({
                 statusCode: 400,
-                statusMessage: "|Error| Wrong login method",
+                statusMessage: "Wrong login method",
             });
 
         const isValidPassword = await compare(
@@ -34,7 +34,7 @@ export default eventHandler(async (event) => {
         if (!isValidPassword)
             throw createError({
                 statusCode: 400,
-                statusMessage: "|Error| Wrong password",
+                statusMessage: "Wrong password",
             });
 
         await setUserSession(event, {
@@ -48,7 +48,11 @@ export default eventHandler(async (event) => {
 
         return {};
     } catch (error) {
-        if (error instanceof H3Error)
-            throw createError({ ...error, fatal: true });
+        if (error instanceof H3Error) throw createError({ ...error });
+
+        throw createError({
+            statusCode: 500,
+            statusMessage: "An unknown error ocurred",
+        });
     }
 });

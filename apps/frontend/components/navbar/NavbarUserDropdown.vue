@@ -37,6 +37,10 @@
             ],
         },
         {
+            label: "Edit Account",
+            action: async () => await navigateTo({ path: "/auth/edit" }),
+        },
+        {
             label: "Sign out",
             action: () => {
                 clear();
