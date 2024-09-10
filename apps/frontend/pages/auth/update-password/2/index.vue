@@ -1,61 +1,72 @@
 <script setup lang="ts">
-    import type { z } from "zod";
-    import { UpdateSchema } from "@/schemas/auth/update.schema";
+    import { z } from "zod";
     import { cn, handleGoBack, handleGoRoot } from "@/lib/utils";
     import { useToast } from "@/components/ui/toast";
-
-    useHead({
-        title: "Edit Account",
-    });
+    import { useUpdatePassword } from "@/stores/updatePassword";
 
     definePageMeta({
-        middleware: ["auth"],
+        middleware: [
+            function () {
+                const { hasCompletedStep } = useUpdatePassword();
+
+                const isAuthenticated = hasCompletedStep("1");
+
+                if (!isAuthenticated)
+                    return navigateTo({ path: "/auth/update-password/1" });
+            },
+        ],
     });
 
-    const validationSchema = toTypedSchema(UpdateSchema);
+    const schema = z
+        .object({
+            newPassword: z
+                .string()
+                .min(1, { message: "Your new password is required" })
+                .min(8, {
+                    message:
+                        "Hmmmm, it'better if it have more than 8 characters",
+                }),
+            confirmPassword: z.string().min(1, {
+                message: "Type your password again ...",
+            }),
+        })
+        .refine((data) => data.newPassword === data.confirmPassword, {
+            message: "Passwords should match",
+            path: ["confirmPassword"],
+        });
 
-    const { session, fetch } = useUserSession();
+    const validationSchema = toTypedSchema(schema);
     const { handleSubmit, errors } = useForm({
         validationSchema,
         initialValues: {
-            email: session.value.user?.email,
-            username: session.value.user?.name,
+            newPassword: "",
+            confirmPassword: "",
         },
     });
+
     const { toast } = useToast();
 
-    const formFields: FormField<z.infer<typeof UpdateSchema>>[] = [
+    const { clear: clearCurrentSession } = useUserSession();
+
+    const formFields: FormField<z.infer<typeof schema>>[] = [
         {
-            name: "email",
-            label: "Email",
-            type: "email",
-            autocomplete: "email",
+            name: "newPassword",
+            type: "password",
+            label: "New Password",
+            autocomplete: "new-password",
         },
         {
-            name: "username",
-            label: "Username",
-            type: "text",
-            autocomplete: "username",
+            name: "confirmPassword",
+            type: "password",
+            label: "Confirm Password",
+            autocomplete: "off",
         },
     ];
 
     const onSubmit = handleSubmit((values) => {
-        if (!session.value.user) return;
-
-        const { username: newUsername, email: newEmail } = values;
-        const { name, email } = session.value.user;
-
-        if (name === newUsername && email === newEmail) return;
-
-        $fetch("/api/auth/user/edit", {
+        $fetch("/api/auth/user/update-password", {
             method: "POST",
-            body: {
-                name: newUsername,
-                email: newEmail,
-            },
-            query: {
-                userId: session.value.user.id,
-            },
+            body: { password: values.newPassword },
             onResponseError(error) {
                 toast({
                     title: "Oops! An error ocurred",
@@ -64,13 +75,25 @@
                 });
             },
         }).then(async () => {
+            const { clear: clearUpdatePasswordStore } = useUpdatePassword();
+
+            clearUpdatePasswordStore();
+
+            await clearCurrentSession();
+
             toast({
-                title: "User updated!",
+                title: "Password changed succesfully",
+                description: "Now you can login with it",
             });
 
-            await fetch();
+            await navigateTo({ path: "/auth/login" });
+        });
+    });
 
-            handleGoRoot();
+    onMounted(() => {
+        toast({
+            title: "Now you can change your password",
+            description: "Make sure to remmember it",
         });
     });
 </script>
@@ -82,7 +105,7 @@
                 <CardTitle
                     class="text-2xl font-bold text-center dark:text-gray-100"
                 >
-                    Update
+                    Change Password
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -120,14 +143,6 @@
                             <FormMessage class="dark:text-orange-400" />
                         </FormItem>
                     </FormField>
-
-                    <div>
-                        <NuxtLink
-                            to="/auth/update-password/1"
-                            class="text-orange-500 text-sm dark:text-slate-200 font-bold"
-                            >Change password</NuxtLink
-                        >
-                    </div>
 
                     <div class="space-x-2">
                         <Button

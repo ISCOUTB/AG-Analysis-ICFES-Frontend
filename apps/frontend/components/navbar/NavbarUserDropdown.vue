@@ -42,11 +42,13 @@
         },
         {
             label: "Sign out",
-            action: () => {
+            action: async () => {
                 clear();
                 toast({
                     title: "Logged out",
                 });
+
+                await navigateTo({ path: "/" });
             },
         },
     ];
@@ -64,7 +66,10 @@
         <template #default="{ user }">
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <Avatar size="sm">
+                    <Avatar
+                        size="sm"
+                        class="border border-gray-950 dark:border-none"
+                    >
                         <AvatarImage :src="user?.image || '/default.jpg'" />
                         <AvatarFallback>
                             {{ createAvatarFallback(user?.name) }}

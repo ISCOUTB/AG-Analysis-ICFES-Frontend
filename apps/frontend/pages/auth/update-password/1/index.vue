@@ -1,61 +1,38 @@
 <script setup lang="ts">
-    import type { z } from "zod";
-    import { UpdateSchema } from "@/schemas/auth/update.schema";
+    import { z } from "zod";
     import { cn, handleGoBack, handleGoRoot } from "@/lib/utils";
     import { useToast } from "@/components/ui/toast";
+    import { useUpdatePassword } from "@/stores/updatePassword";
 
-    useHead({
-        title: "Edit Account",
+    const schema = z.object({
+        password: z
+            .string()
+            .min(1, { message: "Your current password is required" }),
     });
 
-    definePageMeta({
-        middleware: ["auth"],
-    });
-
-    const validationSchema = toTypedSchema(UpdateSchema);
-
-    const { session, fetch } = useUserSession();
+    const validationSchema = toTypedSchema(schema);
     const { handleSubmit, errors } = useForm({
         validationSchema,
         initialValues: {
-            email: session.value.user?.email,
-            username: session.value.user?.name,
+            password: "",
         },
     });
+
     const { toast } = useToast();
 
-    const formFields: FormField<z.infer<typeof UpdateSchema>>[] = [
+    const formFields: FormField<z.infer<typeof schema>>[] = [
         {
-            name: "email",
-            label: "Email",
-            type: "email",
-            autocomplete: "email",
-        },
-        {
-            name: "username",
-            label: "Username",
-            type: "text",
-            autocomplete: "username",
+            name: "password",
+            type: "password",
+            label: "Current Password",
+            autocomplete: "current-password",
         },
     ];
 
     const onSubmit = handleSubmit((values) => {
-        if (!session.value.user) return;
-
-        const { username: newUsername, email: newEmail } = values;
-        const { name, email } = session.value.user;
-
-        if (name === newUsername && email === newEmail) return;
-
-        $fetch("/api/auth/user/edit", {
+        $fetch("/api/auth/user/valid-password", {
             method: "POST",
-            body: {
-                name: newUsername,
-                email: newEmail,
-            },
-            query: {
-                userId: session.value.user.id,
-            },
+            body: { password: values.password },
             onResponseError(error) {
                 toast({
                     title: "Oops! An error ocurred",
@@ -64,13 +41,11 @@
                 });
             },
         }).then(async () => {
-            toast({
-                title: "User updated!",
-            });
+            const { markAsCompleted } = useUpdatePassword();
 
-            await fetch();
+            markAsCompleted("1");
 
-            handleGoRoot();
+            await navigateTo({ path: "/auth/update-password/2" });
         });
     });
 </script>
@@ -82,7 +57,7 @@
                 <CardTitle
                     class="text-2xl font-bold text-center dark:text-gray-100"
                 >
-                    Update
+                    Change Password
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -120,14 +95,6 @@
                             <FormMessage class="dark:text-orange-400" />
                         </FormItem>
                     </FormField>
-
-                    <div>
-                        <NuxtLink
-                            to="/auth/update-password/1"
-                            class="text-orange-500 text-sm dark:text-slate-200 font-bold"
-                            >Change password</NuxtLink
-                        >
-                    </div>
 
                     <div class="space-x-2">
                         <Button

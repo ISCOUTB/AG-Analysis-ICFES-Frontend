@@ -1,42 +1,43 @@
 import { H3Error, type H3Event } from "h3";
 import { prisma } from "@/lib/prisma";
+import { genSalt, hash } from "bcrypt";
 
 export default defineEventHandler(async (event: H3Event) => {
     try {
         const session = await requireUserSession(event);
+        const { password } = await readBody(event);
 
-        const { email, name } = await readBody(event);
-
-        const userWithEmail = await prisma.user.findUnique({
-            where: { email },
-        });
-
-        if (userWithEmail)
+        if (!password)
             throw createError({
                 statusCode: 400,
-                statusMessage: "Email already in use",
+                statusMessage: "No password were provided",
             });
 
-        const user = await prisma.user.update({
-            data: {
-                email,
-                name,
-            },
+        const user = await prisma.user.findUnique({
             where: {
                 id: session.user.id,
             },
         });
 
-        await replaceUserSession(event, {
-            user: {
-                email: user.email,
-                name: user.name || user.email.split("@")[0],
+        if (!user)
+            throw createError({
+                statusCode: 400,
+                statusMessage: "User not exists",
+            });
+
+        const salt = await genSalt(15);
+        const hashedPassword = await hash(password, salt);
+
+        const updatedUser = await prisma.user.update({
+            where: {
                 id: user.id,
             },
-            loggedInAt: Date.now(),
+            data: {
+                hashedPassword,
+            },
         });
 
-        return {};
+        return { updatedUser };
     } catch (error) {
         if (error instanceof H3Error) throw createError({ ...error });
 
