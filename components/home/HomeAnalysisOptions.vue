@@ -28,7 +28,10 @@
                 </div>
                 <div>
                     <span class="font-semibold">Report Type</span>
-                    <Select @update:model-value="handleReportTypeChange">
+                    <Select
+                        :default-value="ReportType.SABER11"
+                        @update:model-value="handleReportTypeChange"
+                    >
                         <SelectTrigger class="mt-2">
                             <SelectValue placeholder="Select the Report Type" />
                         </SelectTrigger>
@@ -45,54 +48,13 @@
                 </div>
             </div>
             <div class="flex flex-col gap-4">
-                <div>
-                    <span class="font-semibold">Department</span>
-                    <Select
-                        :model-value="analysisStore.department"
-                        @update:model-value="
-                            (payload: string) =>
-                                analysisStore.setDepartment(payload)
-                        "
-                    >
-                        <SelectTrigger class="mt-2">
-                            <SelectValue placeholder="Select a Department" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="value"> Buenos dias </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div>
-                    <span class="font-semibold">Municipality</span>
-                    <Select
-                        :model-value="analysisStore.municipality"
-                        @update:model-value="
-                            (payload: string) => analysisStore.setMunicipality(payload)
-                        "
-                    >
-                        <SelectTrigger class="mt-2">
-                            <SelectValue placeholder="Select a Municipality" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="value"> Buenos dias </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div>
-                    <span class="font-semibold">Institution</span>
-                    <Select
-                        :model-value="analysisStore.institution"
-                        @update:model-value="
-                            (payload: string) => analysisStore.setInstitution(payload)
-                        "
-                    >
-                        <SelectTrigger class="mt-2">
-                            <SelectValue placeholder="Select a Institution" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="value"> Buenos dias </SelectItem>
-                        </SelectContent>
-                    </Select>
+                <HomeSelectDepartment />
+                <LazyHomeSelectMunicipality />
+                <div v-auto-animate>
+                    <LazyHomeSelectHighschools
+                        v-if="analysisStore.reportType === ReportType.SABER11"
+                    />
+                    <LazyHomeSelectColleges v-else />
                 </div>
             </div>
         </div>
