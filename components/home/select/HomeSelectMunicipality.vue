@@ -3,19 +3,7 @@
 
     const analysisStore = useAnalysisOptions();
 
-    const { data } = await useAsyncGql({
-        operation: "municipalities",
-        variables: computed(() => ({
-            departmentId: analysisStore.department,
-        })),
-    });
-
-    const filteredMunicipalities = computed(() => {
-        if (!analysisStore.department) return;
-        return data.value.municipalities?.filter(
-            (municipality) => municipality !== null,
-        );
-    });
+    const { filteredMunicipalities } = useHomeMunicipalities();
 </script>
 
 <template>
@@ -43,5 +31,6 @@
                 </SelectItem>
             </SelectContent>
         </Select>
+        {{ filteredMunicipalities }}
     </div>
 </template>
