@@ -36,4 +36,7 @@ export default defineNuxtConfig({
     alias: {
         pinia: "pinia/dist/pinia.mjs",
     },
+    imports: {
+        dirs: ["composables/**"],
+    },
 });
