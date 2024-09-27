@@ -42,7 +42,11 @@ export const useAnalysisOptions = defineStore("analysis-options-store", {
             this.period = payload;
         },
 
-        clear() {
+        clear(key: keyof Omit<State, "reportType">) {
+            this[key] = "";
+        },
+
+        clearAll() {
             this.department = "";
             this.municipality = "";
             this.institution = "";

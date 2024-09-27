@@ -9,8 +9,10 @@
             !analysisStore.department || !filteredMunicipalities.value?.length,
     );
 
-    const handleSelect = (payload: string) =>
+    function handleSelect(payload: string) {
         analysisStore.setMunicipality(payload);
+        analysisStore.clear("institution");
+    }
 </script>
 
 <template>
