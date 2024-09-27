@@ -3,15 +3,10 @@
 
     const analysisStore = useAnalysisOptions();
 
-    const reportType = computed(() => analysisStore.reportType);
-
     const { data } = useAsyncGql({
         operation: "periods",
         variables: {
-            type: getType(),
-        },
-        options: {
-            watch: [reportType],
+            type: computed(() => getType()),
         },
     });
 
@@ -21,14 +16,10 @@
         return data.value.periods?.filter((period) => period !== null);
     });
 
-    function getType(): string {
-        switch (reportType.value) {
-            case ReportType.SABER11:
-                return "Saber11";
-
-            case ReportType.SABERPRO:
-                return "SaberPro";
-        }
+    function getType() {
+        if (analysisStore.reportType === ReportType.SABER11) return "Saber11";
+        if (analysisStore.reportType === ReportType.SABERPRO) return "SaberPro";
+        return "Saber11";
     }
 </script>
 
