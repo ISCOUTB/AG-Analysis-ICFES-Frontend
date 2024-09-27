@@ -4,6 +4,13 @@
     const analysisStore = useAnalysisOptions();
 
     const { filteredMunicipalities } = useHomeMunicipalities();
+    const disabled = computed(
+        () =>
+            !analysisStore.department || !filteredMunicipalities.value?.length,
+    );
+
+    const handleSelect = (payload: string) =>
+        analysisStore.setMunicipality(payload);
 </script>
 
 <template>
@@ -11,26 +18,23 @@
         <span class="font-semibold">Municipality</span>
         <Select
             :model-value="analysisStore.municipality"
-            :disabled="
-                !analysisStore.department || !filteredMunicipalities?.length
-            "
-            @update:model-value="
-                (payload: string) => analysisStore.setMunicipality(payload)
-            "
+            :disabled="disabled"
+            @update:model-value="handleSelect"
         >
             <SelectTrigger class="mt-2">
                 <SelectValue placeholder="Select a Municipality" />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem
-                    v-for="municipality in filteredMunicipalities"
-                    :key="municipality.id"
-                    :value="municipality.id"
-                >
-                    {{ municipality.name }}
-                </SelectItem>
+                <div>
+                    <SelectItem
+                        v-for="data in filteredMunicipalities"
+                        :key="data.id"
+                        :value="data.id"
+                    >
+                        {{ data.name }}
+                    </SelectItem>
+                </div>
             </SelectContent>
         </Select>
-        {{ filteredMunicipalities }}
     </div>
 </template>
