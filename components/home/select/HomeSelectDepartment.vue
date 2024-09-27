@@ -10,6 +10,11 @@
     const filteredDepartments = computed(() =>
         data.value.departments?.filter((department) => department !== null),
     );
+
+    function handleSelect(payload: string) {
+        analysisStore.setDepartment(payload);
+        analysisStore.clear("municipality");
+    }
 </script>
 
 <template>
@@ -17,9 +22,7 @@
         <span class="font-semibold">Department</span>
         <Select
             :model-value="analysisStore.department"
-            @update:model-value="
-                (payload) => analysisStore.setDepartment(payload)
-            "
+            @update:model-value="handleSelect"
         >
             <SelectTrigger class="mt-2">
                 <SelectValue placeholder="Select a department" />

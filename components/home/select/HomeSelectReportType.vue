@@ -10,6 +10,7 @@
             return;
 
         analysisStore.setReportType(value);
+        analysisStore.clear("period");
     }
 </script>
 
