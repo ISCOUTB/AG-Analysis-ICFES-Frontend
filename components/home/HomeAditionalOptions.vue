@@ -4,7 +4,7 @@
             class="container px-4 md:px-6 flex flex-col md:grid md:grid-cols-2 gap-12"
         >
             <div class="flex flex-col gap-4">
-                <span class="text-3xl font-bold">Adicional Options</span>
+                <span class="text-3xl font-bold">Aditional Options</span>
                 <span class="text-gray-600 dark:text-slate-50/70"
                     >Select the options that will be included in the
                     analysis</span
