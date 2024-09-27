@@ -8,6 +8,7 @@ interface State {
     municipality: string;
     institution: string;
     reportType: ReportType;
+    period: string;
 }
 
 export const useAnalysisOptions = defineStore("analysis-options-store", {
@@ -16,6 +17,7 @@ export const useAnalysisOptions = defineStore("analysis-options-store", {
         institution: "",
         municipality: "",
         reportType: ReportType.SABER11,
+        period: "",
     }),
     actions: {
         setDepartment(payload: string) {
@@ -36,11 +38,16 @@ export const useAnalysisOptions = defineStore("analysis-options-store", {
             this.reportType = payload;
         },
 
+        setPeriod(payload: string) {
+            this.period = payload;
+        },
+
         clear() {
             this.department = "";
             this.municipality = "";
             this.institution = "";
             this.reportType = ReportType.SABER11;
+            this.period = "";
         },
     },
 });

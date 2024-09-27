@@ -3,18 +3,13 @@
 
     const analysisStore = useAnalysisOptions();
 
-    const { data } = useAsyncGql({
-        operation: "colleges",
-        variables: computed(() => ({
-            municipalityId: analysisStore.municipality,
-        })),
-    });
+    const { filteredColleges } = useHomeColleges();
+    const disabled = computed(
+        () => !analysisStore.municipality || !filteredColleges.value?.length,
+    );
 
-    const filteredInstitutions = computed(() => {
-        if (!analysisStore.municipality) return;
-
-        return data.value.colleges?.filter((college) => college !== null);
-    });
+    const handleSelect = (payload: string) =>
+        analysisStore.setInstitution(payload);
 </script>
 
 <template>
@@ -22,19 +17,15 @@
         <span class="font-semibold">Institution</span>
         <Select
             :model-value="analysisStore.institution"
-            :disabled="
-                !analysisStore.municipality || !filteredInstitutions?.length
-            "
-            @update:model-value="
-                (payload: string) => analysisStore.setInstitution(payload)
-            "
+            :disabled="disabled"
+            @update:model-value="handleSelect"
         >
             <SelectTrigger class="mt-2">
                 <SelectValue placeholder="Select a Institution" />
             </SelectTrigger>
             <SelectContent>
                 <SelectItem
-                    v-for="item in filteredInstitutions"
+                    v-for="item in filteredColleges"
                     :key="item.id"
                     :value="item.id"
                 >
