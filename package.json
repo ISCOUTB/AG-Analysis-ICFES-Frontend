@@ -40,6 +40,7 @@
         "@eslint/js": "^9.9.1",
         "@iconify-json/heroicons-outline": "^1.2.0",
         "@iconify-json/material-symbols": "^1.2.1",
+        "@iconify-json/material-symbols-light": "^1.2.1",
         "@iconify-json/mdi": "^1.2.0",
         "@iconify-json/tdesign": "^1.2.1",
         "@nuxtjs/color-mode": "^3.4.4",
