@@ -14,7 +14,12 @@
         active: boolean;
         responseTime: number;
         loading: boolean;
+        lastChecked: number;
     }
+
+    const MAX_REQUESTS = 10;
+    const REQUEST_WINDOW = 5 * 60 * 1000;
+    const STORAGE_KEY = "healthcheck_data";
 
     const operations: GqlOps[] = [
         "colleges",
@@ -33,7 +38,50 @@
         ) as Record<GqlOps, OperationStatus>,
     );
 
+    const requestCount = ref(0);
+    const lastRequestTime = ref(0);
+
+    function loadFromStorage() {
+        const storedData = localStorage.getItem(STORAGE_KEY);
+
+        if (!storedData) return;
+
+        const { status, count, time } = JSON.parse(storedData);
+        operationStatus.value = status;
+        requestCount.value = count;
+        lastRequestTime.value = time;
+    }
+
+    function saveToStorage() {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+                status: operationStatus.value,
+                count: requestCount.value,
+                time: lastRequestTime.value,
+            }),
+        );
+    }
+
+    function canMakeRequest() {
+        const now = Date.now();
+        if (now - lastRequestTime.value > REQUEST_WINDOW) {
+            requestCount.value = 0;
+            lastRequestTime.value = now;
+        }
+        return requestCount.value < MAX_REQUESTS;
+    }
+
     function checkOperationStatus(operation: GqlOps) {
+        if (!canMakeRequest()) {
+            console.log(
+                `Request limit reached. Using stored data for ${operation}.`,
+            );
+            return;
+        }
+
+        operationStatus.value[operation].loading = true;
+
         const startTime = performance.now();
 
         useAsyncGql({ operation })
@@ -43,6 +91,7 @@
                         active: true,
                         responseTime: 0,
                         loading: false,
+                        lastChecked: Date.now(),
                     }),
             )
             .finally(() => {
@@ -51,10 +100,14 @@
                     ...operationStatus.value[operation],
                     responseTime: endTime - startTime,
                 };
+                requestCount.value++;
+                lastRequestTime.value = Date.now();
+                saveToStorage();
             });
     }
 
     onMounted(() => {
+        loadFromStorage();
         operations.forEach((operation) => checkOperationStatus(operation));
     });
 </script>
