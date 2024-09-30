@@ -54,8 +54,8 @@ services:
         environment:
             - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
         depends_on:
-            - postgres:
-                  condition: service_healthy
+            postgres:
+                condition: service_healthy
         networks:
             - db
 
