@@ -47,6 +47,18 @@ services:
         networks:
             - db
 
+    nuxtapp:
+        image: base/arch
+        env_file:
+            - .env
+        environment:
+            - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
+        depends_on:
+            - postgres:
+                  condition: service_healthy
+        networks:
+            - db
+
 networks:
     db:
 
