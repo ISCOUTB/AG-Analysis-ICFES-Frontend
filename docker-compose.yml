@@ -1,0 +1,27 @@
+services:
+    nuxt-app:
+        image: base/arch
+        container_name: dev__nuxt-app
+        restart: unless-stopped
+        working_dir: /app
+        volumes:
+            - ./:/app
+            - /app/node_modules
+            - ./.env:/app/.env
+        ports:
+            - "3000:3000"
+        environment:
+            NODE_ENV: development
+        command: >
+            /bin/sh -c "
+            pacman -Sy --noconfirm &&
+            pacman -S --noconfirm nodejs npm &&
+            npm install &&
+            npm run dev 
+            "
+        networks:
+            - nuxt_network
+
+networks:
+    nuxt_network:
+        driver: bridge
