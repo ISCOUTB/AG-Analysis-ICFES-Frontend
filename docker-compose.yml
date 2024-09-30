@@ -22,6 +22,9 @@ services:
             timeout: 5s
             retries: 3
 
+        networks:
+            - db
+
     pgadmin:
         image: dpage/pgadmin4
         env_file:
@@ -41,6 +44,11 @@ services:
             postgres:
                 condition: service_healthy
         user: root
+        networks:
+            - db
+
+networks:
+    db:
 
 volumes:
     postgres_data:
