@@ -8,7 +8,7 @@ export default defineNuxtConfig({
         ["@nuxtjs/color-mode", { classSuffix: "" }],
         "nuxt-graphql-client",
         "nuxt-auth-utils",
-        ["@pinia/nuxt", { storesDirs: ["./stores/**"] }],
+        ["@pinia/nuxt", { storesDirs: ["./stores/**"], alias: "pinia/dist/pinia.mjs" }],
         "@nuxt/eslint",
         "@nuxt/icon",
         "@vee-validate/nuxt",
@@ -32,9 +32,6 @@ export default defineNuxtConfig({
     ],
     experimental: {
         typedPages: true,
-    },
-    alias: {
-        pinia: "pinia/dist/pinia.mjs",
     },
     imports: {
         dirs: ["composables/**"],
